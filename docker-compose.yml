@@ -1,0 +1,26 @@
+version: '2'
+services:
+  mariadb:
+    image: mariadb:latest
+    restart: always
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    
+  cassandra:
+    image: cassandra:latest
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - 15672:15672
+
+  flink:
+    image: elvis2002/cqrs:1.0
+    restart: always
+    links:
+      - cassandra:cassandra
+      - mariadb:mariadb
+      - rabbitmq:rabbitmq
+    entrypoint: /opt/bin/start.sh
